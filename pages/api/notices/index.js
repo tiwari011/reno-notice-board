@@ -82,6 +82,14 @@ export default async function handler(req, res) {
     res.setHeader("Allow", ["GET", "POST"]);
     return res.status(405).json({ error: "Method not allowed." });
   } catch (error) {
-    return res.status(500).json({ error: "Unexpected server error." });
+    console.error("API /api/notices error:", error);
+    const message =
+      process.env.NODE_ENV === "production"
+        ? "Unexpected server error."
+        : error instanceof Error
+          ? error.message
+          : "Unexpected server error.";
+
+    return res.status(500).json({ error: message });
   }
 }
